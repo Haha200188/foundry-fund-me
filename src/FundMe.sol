@@ -9,9 +9,9 @@ pragma solidity ^0.8.18;
 import {AggregatorV3Interface} from "lib/chainlink-brownie-contracts/contracts/src/v0.8/interfaces/AggregatorV3Interface.sol";
 import {PriceConverter} from "./PriceConverter.sol";
 
-error NotOwner();
-error NotEnoughETH(uint256 sent, uint256 required);
-error CallFailed();
+error FundMe_NotOwner();
+error FundMe_NotEnoughETH(uint256 sent, uint256 required);
+error FundMe_CallFailed();
 
 contract FundMe {
     using PriceConverter for uint256;
@@ -31,7 +31,7 @@ contract FundMe {
         //     "You need to spend more ETH!"
         // );
         if (msg.value.getConversionRate() < MINIMUM_USD) {
-            revert NotEnoughETH({
+            revert FundMe_NotEnoughETH({
                 sent: msg.value.getConversionRate(),
                 required: MINIMUM_USD
             });
@@ -50,7 +50,7 @@ contract FundMe {
     }
 
     modifier onlyOwner() {
-        if (msg.sender != I_OWNER) revert NotOwner();
+        if (msg.sender != I_OWNER) revert FundMe_NotOwner();
         _;
     }
 
@@ -76,7 +76,7 @@ contract FundMe {
             value: address(this).balance
         }("");
         if (!callSuccess) {
-            revert CallFailed();
+            revert FundMe_CallFailed();
         }
     }
 
