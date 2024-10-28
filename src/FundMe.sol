@@ -21,18 +21,20 @@ contract FundMe {
 
     address public immutable I_OWNER;
     uint256 public constant MINIMUM_USD = 50 * 10 ** 18;
+    AggregatorV3Interface private s_priceFeed;
 
-    constructor() {
+    constructor(address priceFeed) {
         I_OWNER = msg.sender;
+        s_priceFeed = AggregatorV3Interface(priceFeed);
     }
     function fund() public payable {
         // require(
-        //     msg.value.getConversionRate() >= MINIMUM_USD,
+        //     msg.value.getConversionRate(s_priceFeed) >= MINIMUM_USD,
         //     "You need to spend more ETH!"
         // );
-        if (msg.value.getConversionRate() < MINIMUM_USD) {
+        if (msg.value.getConversionRate(s_priceFeed) < MINIMUM_USD) {
             revert FundMe_NotEnoughETH({
-                sent: msg.value.getConversionRate(),
+                sent: msg.value.getConversionRate(s_priceFeed),
                 required: MINIMUM_USD
             });
         }
@@ -42,11 +44,8 @@ contract FundMe {
     }
 
     function getVersion() public view returns (uint256) {
-        // ETH/USD price feed address of Sepolia Network.
-        AggregatorV3Interface priceFeed = AggregatorV3Interface(
-            0x694AA1769357215DE4FAC081bf1f309aDC325306
-        );
-        return priceFeed.version();
+        // ETH/USD price feed address.
+        return s_priceFeed.version();
     }
 
     modifier onlyOwner() {
