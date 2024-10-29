@@ -2,7 +2,6 @@
 
 pragma solidity ^0.8.18;
 
-import {console} from "../lib/forge-std/src/Test.sol";
 import {Script} from "../lib/forge-std/src/Script.sol";
 import {MockV3Aggregator} from "../test/mocks/MockV3Aggregator.sol";
 contract HelperConfig is Script {
@@ -48,7 +47,6 @@ contract HelperConfig is Script {
 
         // Check to see if we set an active network config
         if (activeNetworkConfig.priceFeed != address(0)) {
-            console.log("already set!");
             return activeNetworkConfig;
         }
 

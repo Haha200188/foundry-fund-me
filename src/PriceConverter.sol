@@ -8,9 +8,7 @@ library PriceConverter {
         AggregatorV3Interface priceFeed
     ) internal view returns (uint256) {
         (, int256 answer, , , ) = priceFeed.latestRoundData();
-        return uint256(answer * 10000000000);
-        // or (Both will do the same thing)
-        // return uint256(answer * 1e10); // 1* 10 ** 10 == 10000000000
+        return uint256(answer * 1e10); // 1* 10 ** 10 == 10000000000
     }
 
     function getConversionRate(
