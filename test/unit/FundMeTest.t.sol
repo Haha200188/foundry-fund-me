@@ -17,7 +17,7 @@ contract FundMeTest is Test {
     FundMe public fundMe;
     HelperConfig public helperConfig;
 
-    address public immutable USER = makeAddr("user");
+    address public constant USER = address(1);
     uint256 public constant SEND_VALUE = 1e18;
     uint256 public constant STARTING_BALANCE = 10 ether;
 
@@ -68,6 +68,7 @@ contract FundMeTest is Test {
         assertEq(userAddress, USER);
     }
 
+    // withdraw
     modifier funded() {
         vm.prank(USER);
         fundMe.fund{value: SEND_VALUE}();
@@ -75,7 +76,6 @@ contract FundMeTest is Test {
         _;
     }
 
-    // withdraw
     function testWithdrawFailedCalledByNotOwner() public funded {
         vm.expectRevert(IFundMeErrors.FundMe_NotOwner.selector);
         fundMe.withdraw();
