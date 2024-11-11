@@ -71,6 +71,7 @@ contract FundMeTest is Test {
     // withdraw
     modifier funded() {
         vm.prank(USER);
+        vm.deal(address(fundMe), 0); // reset the balance of FundMe contract to 0
         fundMe.fund{value: SEND_VALUE}();
         assert(address(fundMe).balance > 0);
         _;
@@ -103,6 +104,7 @@ contract FundMeTest is Test {
         // arrange
         uint160 numberOfFunders = 10;
         uint160 startingFunderIndex = 2;
+
         for (
             uint160 i = startingFunderIndex;
             i < startingFunderIndex + numberOfFunders;
@@ -112,7 +114,6 @@ contract FundMeTest is Test {
             hoax(address(i), SEND_VALUE);
             fundMe.fund{value: SEND_VALUE}();
         }
-
         uint256 startingOwnerBalance = fundMe.getOwner().balance;
         uint256 startingFundMeBalance = address(fundMe).balance;
         // act
